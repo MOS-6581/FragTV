@@ -1,0 +1,41 @@
+
+
+Requirements:
+
+run vcredist_x86_2008.exe
+run vcredist_x86_2010.exe
+
+Make sure you have WolfcamQL installed with all the nescessary .pk3 files (see WolfcamQL's readme)
+http://sourceforge.net/projects/wolfcamql/
+
+
+Client:
+
+Step 1:
+Under the Wolfcam tab specify the path to your WolfcamQL installation
+
+Step 2:
+Add the server host:ip you want to spectate to your channel list, click save and connect
+
+
+
+Server:
+
+Step 1:
+Create an alternate twitch.tv account, to broadcast a secondary stream for FragTV viewers without ingame sound
+
+Step 2:
+Under the live tab insert the video url to your secondary channel, use popout: http://www.twitch.tv/SECONDARYCHANNELNAME/popout
+
+Step 3:
+Under the sync helper tab open the barcode window and embed it in your secondary video stream 
+
+Step 4:
+Under the live tab insert the url to your chat room, you can use the same as your main stream channel, use popout: http://www.twitch.tv/chat/embed?channel=CHANNELNAME&popout_chat=true
+
+Step 5:
+Under the network tab, choose a port and begin listening to accept incoming connections
+Consult http://portforward.com/guides.htm if you dont know how to forward ports etc
+
+Step 6:
+Under the game tab specify your demo folder and start scanning to look for new data to broadcast.

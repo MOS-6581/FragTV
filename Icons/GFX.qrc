@@ -1,0 +1,13 @@
+<RCC>
+    <qresource prefix="/network">
+        <file>Green Ball.ico</file>
+        <file>Red Ball.ico</file>
+    </qresource>
+    <qresource prefix="/mainWindow">
+        <file>Record Red Button.ico</file>
+        <file>Play Green Button.ico</file>
+        <file>Donate.ico</file>
+        <file>Discussion.ico</file>
+        <file>paypal.gif</file>
+    </qresource>
+</RCC>
