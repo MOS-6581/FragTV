@@ -6,6 +6,14 @@
 #include <QObject>
 
 
+struct demoChunk
+{
+    QByteArray message;
+    int messageType; 
+    qint64 readTime;
+};
+
+
 class DemoScanner : public QObject
 {
 
@@ -31,12 +39,15 @@ private:
     QTimer* demoFeedTimer;
     qint64 lastFileUpdateTime;
     int currentDemoReadPosition;
+    int chunksRead;
 
     bool isStreaming;
     QString currentDemoFileName;
     QFile* currentDemoFile;
 
-    QList<QByteArray> currentDemoAllChunks;
+    bool delayData;
+    int delayDuration;
+    QList<demoChunk> delayedChunks;
 
 
 public slots:
@@ -51,6 +62,8 @@ public slots:
     void readNewDemo(QString fileName);
     void feedDemo();
     void demoFinished();
+
+    void sendDelayedData();
 
 
 signals:
