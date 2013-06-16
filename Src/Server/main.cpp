@@ -8,7 +8,7 @@ int main(int argc, char *argv[])
     QApplication application(argc, argv);
 
     application.setOrganizationName("FragTV");
-    application.setApplicationVersion("0.1");
+    application.setApplicationVersion("0.1.2");
     application.setApplicationName("FragServer");
 
 
