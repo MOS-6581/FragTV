@@ -135,9 +135,6 @@ void DemoScanner::checkForNewDemo(QString path)
 
 void DemoScanner::readNewDemo(QString fileName)
 {
-    lastFileUpdateTime  = QDateTime::currentMSecsSinceEpoch();
-    currentDemoFileName = fileName;
-
     qDebug() << "Found new demo: " << fileName;
 
 
@@ -148,6 +145,10 @@ void DemoScanner::readNewDemo(QString fileName)
     }
 
     isStreaming = true;
+
+
+    lastFileUpdateTime  = QDateTime::currentMSecsSinceEpoch();
+    currentDemoFileName = fileName;
 
 
     QString demoPath = demoFolderPath + QDir::separator() + fileName;
