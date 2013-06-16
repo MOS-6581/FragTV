@@ -11,7 +11,7 @@ int main(int argc, char *argv[])
 
     application.setOrganizationName("FragTV");
     application.setApplicationName("FragClient");
-    application.setApplicationVersion("0.1");
+    application.setApplicationVersion("0.1.2");
 
 
     QStringList args = application.arguments();

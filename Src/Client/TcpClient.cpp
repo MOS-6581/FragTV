@@ -10,6 +10,7 @@ TcpClient::TcpClient(QObject* parent) : QObject(parent), blockSize(0)
 {
     tcpSocket = new QTcpSocket(this);
     tcpSocket->setReadBufferSize(1024 * 1024);
+    tcpSocket->setSocketOption(QAbstractSocket::KeepAliveOption, true);
 
 
     connect(CLIENTUI->streamConnectButton    , SIGNAL(clicked())                           , this , SLOT(tcpConnect())                           );
