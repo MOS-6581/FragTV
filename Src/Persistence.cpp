@@ -1,22 +1,33 @@
 #include "Persistence.h"
 
 #include <QtCore>
+#include <QSettings>
+
+#ifdef QT_GUI_LIB
+
 #include <QtGui>
 #include <QCheckBox>
 #include <QLineEdit>
 #include <QSpinBox>
-#include <QSettings>
 #include <QDesktopServices>
 #include <QDesktopWidget>
+#endif
 
-
-Persistence::Persistence(QWidget* topWindow) : topWindow(topWindow)
+Persistence::Persistence()
 {
     mySettings = new QSettings();
 }
+
 Persistence::~Persistence()
 {
     mySettings->deleteLater();
+}
+
+#ifdef QT_GUI_LIB
+
+Persistence::Persistence(QWidget* aTopWindow) : topWindow(aTopWindow)
+{
+    mySettings = new QSettings();
 }
 
 void Persistence::saveWindow()
@@ -136,3 +147,34 @@ bool Persistence::isWindowVisible(QWidget* window)
         return false;
     }
 }
+
+#endif
+
+bool Persistence::getBoolSetting(const QString &name) const
+{
+	bool value = mySettings->value(name).toBool();
+	if(mySettings->contains(name))
+		return value;
+
+	return false;
+}
+
+QString Persistence::getStringSetting(const QString &name) const
+{
+        QString value = mySettings->value(name).toString();
+        if(mySettings->contains(name))
+		return value;
+
+	return QString("");
+}
+
+
+int Persistence::getIntSetting(const QString &name) const
+{
+        int value = mySettings->value(name).toInt();
+        if(mySettings->contains(name))
+		return value;
+
+	return 0;
+}
+

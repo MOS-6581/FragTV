@@ -10,12 +10,19 @@
 
 TcpWorkerManager::TcpWorkerManager(QObject* parent) : QObject(parent), throttledInProgress(0)
 {
+#ifdef QT_GUI_LIB
     maxThrottle  = SERVERUI->throttleConnectionsSpin->value();
 
     QString html     = SERVERUI->motdHtmlEditField->toPlainText();
     QString videoUrl = SERVERUI->videoBrowserUrlField->text();
     QString chatUrl  = SERVERUI->chatBrowserUrlField->text();
+#else
+    maxThrottle  = DediServerUI::getInstance()->getMaxThrottle();
 
+    QString html = DediServerUI::getInstance()->getMotdHtml();
+    QString videoUrl = DediServerUI::getInstance()->getVideoURL();
+    QString chatUrl = DediServerUI::getInstance()->getChatURL();
+#endif
 
     // Browser commands etc
     spectatorCommands = new SpectatorCommands(this);
@@ -24,11 +31,12 @@ TcpWorkerManager::TcpWorkerManager(QObject* parent) : QObject(parent), throttled
     spectatorCommands->setBrowserPosition(FRAGTV::Browser::VideoNormal);
     spectatorCommands->setBrowserChatUrl(chatUrl);
 
+#ifdef QT_GUI_LIB
     connect(SERVERMAIN , SIGNAL(cmdBrowserPosition(int)) , spectatorCommands , SLOT(setBrowserPosition(int))     );
     connect(SERVERMAIN , SIGNAL(cmdMotd(QString))        , spectatorCommands , SLOT(setMotd(QString))            );
     connect(SERVERMAIN , SIGNAL(cmdVideoUrl(QString))    , spectatorCommands , SLOT(setBrowserVideoUrl(QString)) );
     connect(SERVERMAIN , SIGNAL(cmdChatUrl(QString))     , spectatorCommands , SLOT(setBrowserChatUrl(QString))  );
-
+#endif
 
     netStats = new NetStats(this);
 
@@ -41,7 +49,11 @@ TcpWorkerManager::TcpWorkerManager(QObject* parent) : QObject(parent), throttled
              this                , SLOT(serveThrottled()));
 
 
+#ifdef QT_GUI_LIB
     for(int i=0; i < SERVERUI->threadsSpin->value(); i++)
+#else
+    for(int i=0; i < DediServerUI::getInstance()->getNumThreads(); i++)
+#endif
     {
         // TcpWorkers handle buffering and transmission of data 
         createTcpWorker();

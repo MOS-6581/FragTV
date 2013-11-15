@@ -15,17 +15,15 @@ Ui::ServerWindow* SERVERUI = NULL;
 ServerWindow* SERVERMAIN = NULL;
 
 
-ServerWindow::ServerWindow() : QMainWindow(), ui(new Ui::ServerWindow)
+ServerWindow::ServerWindow(Persistence *aPersistence) : QMainWindow(), ui(new Ui::ServerWindow), persistence(aPersistence)
 {
     SERVERMAIN = this;
 
     ui->setupUi(this);
     SERVERUI = ui;
 
-
-    persistence = new Persistence(this);
+    persistence->setTopWindow(this);
     persistence->restoreWindow();
-
 
     connect(ui->demoPathBrowseButton    , SIGNAL(clicked())       , this , SLOT(getDemoFolderPath()) );
     connect(ui->htmlPreviewButton       , SIGNAL(clicked())       , this , SLOT(previewMotdHtml())   );

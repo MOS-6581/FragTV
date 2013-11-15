@@ -1,6 +1,7 @@
 ﻿#include "TcpListener.h"
 #include "TcpConnectionWorker.h"
 #include "serverWindow.h"
+
 #include "MyThread.h"
 #include "Spectator.h"
 
@@ -12,12 +13,17 @@ TcpListener::TcpListener() : currentClients(0), lastClientUpdate(0)
 
     MyThread* myThread = new MyThread(this);
 
-
+#ifdef QT_GUI_LIB
     limitConnections = SERVERUI->limitConnectionsSpin->value();
     maximumClients   = SERVERUI->maxClientsSpin->value();
     listenIp         = QHostAddress(SERVERUI->ipField->text());
     listenPort       = SERVERUI->portField->text().toUInt();
-
+#else
+    limitConnections = DediServerUI::getInstance()->getLimitConnections();
+    maximumClients   = DediServerUI::getInstance()->getMaximumClients();
+    listenIp         = QHostAddress(DediServerUI::getInstance()->getListenIP());
+    listenPort       = DediServerUI::getInstance()->getListenPort();
+#endif
 
     bulkUpdateConnectedClients = new QTimer(this);
     bulkUpdateConnectedClients->start(500);
@@ -30,6 +36,7 @@ TcpListener::TcpListener() : currentClients(0), lastClientUpdate(0)
     connect(bulkUpdateConnectedClients     , SIGNAL(timeout())                 , this                          , SLOT(bulkSetConnectedClients())       );
     connect(delayedRemoveTimer             , SIGNAL(timeout())                 , this                          , SLOT(delayedRemove())                 );
 
+#ifdef QT_GUI_LIB
     connect(SERVERUI->listenButton         , SIGNAL(clicked())                 , this                          , SLOT(tcpBind())                       );
     connect(SERVERUI->disconnectButton     , SIGNAL(clicked())                 , this                          , SLOT(tcpUnbind())                     );
     connect(SERVERUI->maxClientsSpin       , SIGNAL(valueChanged(int))         , this                          , SLOT(setMaximumClients(int))          );
@@ -40,8 +47,10 @@ TcpListener::TcpListener() : currentClients(0), lastClientUpdate(0)
     connect(this                           , SIGNAL(setStatus(bool))           , SERVERMAIN                    , SLOT(setNetworkListeningStatus(bool)) );
     connect(this                           , SIGNAL(setStatusMessage(QString)) , SERVERUI->networkStatusField  , SLOT(setText(QString))                );
 
-
     if(SERVERUI->listenOnStartupCheck->isChecked()) 
+#else
+    if (DediServerUI::getInstance()->getListenOnStartup())
+#endif
     {
         connect(myThread, SIGNAL(started()), this, SLOT(tcpBind()));
     }

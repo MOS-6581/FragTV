@@ -15,24 +15,28 @@ DemoScanner::DemoScanner() : isStreaming(false)
     demoFeedTimer = new QTimer(this);
     demoFeedTimer->setInterval(100);
 
-
+#ifdef QT_GUI_LIB
     bool demoScannerEnabled = SERVERUI->demoStartupScanCheck->isChecked();
     demoFolderPath = SERVERUI->demoPathField->text();
     debugging = SERVERUI->demoScannerDebugCheck->isChecked();
 
-
     connect(SERVERUI->demoPathField         , SIGNAL(textChanged(QString))      , this                      , SLOT(setDemoFolderPath(QString)) );
     connect(SERVERUI->demoScannerDebugCheck , SIGNAL(stateChanged(int))         , this                      , SLOT(setDebugging(int))          );
-
     connect(SERVERUI->demoPathField         , SIGNAL(returnPressed())           , this                      , SLOT(demoScannerStart())         );
     connect(SERVERUI->scannerStartButton    , SIGNAL(clicked())                 , this                      , SLOT(demoScannerStart())         );
     connect(SERVERUI->scannerStopButton     , SIGNAL(clicked())                 , this                      , SLOT(demoScannerStop())          );
+#else
+    bool demoScannerEnabled = DediServerUI::getInstance()->getDemoScannerEnabled();
+    demoFolderPath = DediServerUI::getInstance()->getDemoFolderPath();
+    debugging = DediServerUI::getInstance()->getDemoScannerDebug();
+#endif
 
     connect(demoFeedTimer                   , SIGNAL(timeout())                 , this                      , SLOT(feedDemo())                 );
 
+#ifdef QT_GUI_LIB
     connect(this                            , SIGNAL(setStatus(bool))           , SERVERMAIN                , SLOT(setDemoScannerStatus(bool)) );
     connect(this                            , SIGNAL(setStatusMessage(QString)) , SERVERUI->demoStatusField , SLOT(setText(QString))           );
-
+#endif
 
     if(demoScannerEnabled)
     {
