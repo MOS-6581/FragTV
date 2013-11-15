@@ -18,7 +18,6 @@ void SpectatorCommands::setBrowserPosition(int position)
     QByteArray message     = builder.generate();    
     currentBrowserPosition = message;
 
-
     emit this->relayBrowserPosition(message);
 }
 void SpectatorCommands::setBrowserVideoUrl(QString url)
@@ -58,6 +57,7 @@ void SpectatorCommands::setMotd(QString html)
     QByteArray message    = builder.generate();
     currentMotdMessage = message;
 
+    qDebug() << "set MOTD: " << html;
 
     emit this->relayMotdMessage(message);
 }

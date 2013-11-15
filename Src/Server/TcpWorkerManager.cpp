@@ -7,6 +7,9 @@
 #include "FragEnums.h"
 #include "NetStats.h"
 
+#ifndef QT_GUI_LIB
+#include "MessageParser.h"
+#endif
 
 TcpWorkerManager::TcpWorkerManager(QObject* parent) : QObject(parent), throttledInProgress(0)
 {
@@ -62,6 +65,16 @@ TcpWorkerManager::TcpWorkerManager(QObject* parent) : QObject(parent), throttled
 TcpWorkerManager::~TcpWorkerManager()
 {
 }
+
+#ifndef QT_GUI_LIB
+void TcpWorkerManager::connectRemoteSettings(MessageParser *messageParser)
+{
+    connect(messageParser, SIGNAL(cmdBrowserPosition(int)) , spectatorCommands , SLOT(setBrowserPosition(int))     );
+    connect(messageParser, SIGNAL(cmdMotd(QString))        , spectatorCommands , SLOT(setMotd(QString))            );
+    connect(messageParser, SIGNAL(cmdVideoUrl(QString))    , spectatorCommands , SLOT(setBrowserVideoUrl(QString)) );
+    connect(messageParser, SIGNAL(cmdChatUrl(QString))     , spectatorCommands , SLOT(setBrowserChatUrl(QString))  );
+}
+#endif
 
 void TcpWorkerManager::createTcpWorker()
 {

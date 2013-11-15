@@ -5,6 +5,9 @@
 #include <QXmlStreamAttributes>
 #include <QXmlStreamAttribute>
 
+#ifndef QT_GUI_LIB
+#include "DediServerUI.h"
+#endif
 
 MessageParser::MessageParser(QObject *parent) : QObject(parent)
 {
@@ -79,24 +82,36 @@ void MessageParser::parseBrowserMessage(QXmlStreamReader* xml)
 
     if(attributeName == FRAGTV::Browser::VideoPosition)
     {
+#ifdef QT_GUI_LIB
         QStringList message("videoPos");
         message << attributeValue;
 
         emit this->browserMessage(message);
+#else
+        emit this->cmdBrowserPosition(attributeValue.toInt());
+#endif
     }
     else if(attributeName == FRAGTV::Browser::VideoUrl)
     {
+#ifdef QT_GUI_LIB
         QStringList message("videoUrl");
         message << attributeValue;
 
         emit this->browserMessage(message);
+#else
+        emit this->cmdVideoUrl(attributeValue);
+#endif
     }
     else if(attributeName == FRAGTV::Browser::ChatUrl)
     {
+#ifdef QT_GUI_LIB
         QStringList message("chatUrl");
         message << attributeValue;
 
         emit this->browserMessage(message);
+#else
+	emit this->cmdChatUrl(attributeValue);
+#endif
     }
     else
     {
@@ -161,6 +176,9 @@ void MessageParser::parseMotd(QXmlStreamReader* xml)
 
     QString motdHtml = xml->readElementText();
 
-
+#ifdef QT_GUI_LIB
     emit this->motd(motdHtml);
+#else
+    emit this->cmdMotd(motdHtml);
+#endif
 }

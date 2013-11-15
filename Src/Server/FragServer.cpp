@@ -91,6 +91,7 @@ FragServer::FragServer()
     connect(demoScanner   , SIGNAL(finishDemo(QByteArray))       , workerManager                   , SIGNAL(finishDemo(QByteArray))       );
 
 #ifndef QT_GUI_LIB
+    workerManager->connectRemoteSettings(messageParser);
     remoteServer->autoConnect();
 #endif
 
