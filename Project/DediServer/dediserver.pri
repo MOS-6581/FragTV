@@ -1,6 +1,7 @@
 
 INCLUDEPATH += ../../Src/Server
 INCLUDEPATH += ../../Src
+INCLUDEPATH += ../../Src/Client
 
 SOURCES += \
 ../../Src/Server/main.cpp \
@@ -22,6 +23,13 @@ SOURCES += \
 ../../Src/MyThread.cpp \
 ../../Src/MyDebug.cpp
 
+# Limited Client code to allow repeater functionality
+SOURCES += \
+../../Src/Client/TcpClient.cpp \
+../../Src/Client/MessageParser.cpp \
+../../Src/Client/Playback.cpp
+
+
 HEADERS += \
 ../../Src/Server/DediServerUI.h \
 ../../Src/Server/FragServer.h \
@@ -40,3 +48,9 @@ HEADERS +=  \
 ../../Src/MyThread.h \
 ../../Src/MyDebug.h \
 ../../Src/FragEnums.h
+
+HEADERS +=  \
+../../Src/Client/TcpClient.h \
+../../Src/Client/MessageParser.h \
+../../Src/Client/Playback.h 
+

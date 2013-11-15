@@ -1,13 +1,24 @@
 #include "Playback.h"
+
+#ifdef QT_GUI_LIB
+
 #include "clientWindow.h"
 #include "WidgetFlash.h"
 
-#include <QtCore>
 #include <QFileDialog>
+
+#else
+
+#include "DediServerUI.h"
+
+#endif
+
+#include <QtCore>
 
 
 Playback::Playback(QObject* parent) : QObject(parent), demoFile(NULL), demoFileStartTime(0), demoServerZeroTime(0)
 {
+#ifdef QT_GUI_LIB
     wolfcam = new QProcess();
 
 
@@ -46,11 +57,14 @@ Playback::Playback(QObject* parent) : QObject(parent), demoFile(NULL), demoFileS
 
     connect( wolfLoadedFileScannerTimer, SIGNAL(timeout()), 
              this, SLOT(wolfcamLoadScanner()));
+
+#endif
 }
 Playback::~Playback()
 {
 }
 
+#ifdef QT_GUI_LIB
 
 void Playback::setPaths()
 {
@@ -377,6 +391,7 @@ void Playback::wolfcamLoadScanner()
         }
     }
 }
+#endif // QT_GUI_LIB
 
 void Playback::demoNew(QString fileName, QByteArray contents, qint64 timeStamp)
 {
@@ -386,7 +401,11 @@ void Playback::demoNew(QString fileName, QByteArray contents, qint64 timeStamp)
 
 
     lastDemoFileUpdate        = QDateTime::currentMSecsSinceEpoch();
+#ifdef QT_GUI_LIB
     demoFile                  = new QFile(exePath + "/wolfcam-ql/demos/FragTV/" + fileName);
+#else
+    demoFile                  = new QFile(DediServerUI::getInstance()->getDemoFolderPath() + "/" + fileName);
+#endif
     currentDemoChunksRecieved = 1;
 
 
@@ -409,7 +428,10 @@ void Playback::demoNew(QString fileName, QByteArray contents, qint64 timeStamp)
     demoFile->open(QIODevice::Append); 
 
 
+#ifdef QT_GUI_LIB
     setDemo(fileName, timeStamp);
+#endif
+
 }
 void Playback::demoAppend(QString fileName, QByteArray contents)
 {
@@ -441,8 +463,12 @@ void Playback::demoFinish()
 {
     qDebug() << "Demo finished";
 
+#ifdef QT_GUI_LIB
     stopDemo();
+#endif
 }
+
+#ifdef QT_GUI_LIB
 
 void Playback::getVideoOffset()
 {
@@ -606,3 +632,4 @@ void Playback::stateHandler(QProcess::ProcessState state)
     }
 }
 
+#endif

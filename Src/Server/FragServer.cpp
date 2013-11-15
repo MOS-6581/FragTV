@@ -3,6 +3,10 @@
 #include "serverWindow.h"
 #ifdef QT_GUI_LIB
 #include "SyncHelper.h"
+#else
+#include "TcpClient.h"
+#include "MessageParser.h"
+#include "Playback.h"
 #endif
 
 #include "MyDebug.h"
@@ -38,6 +42,9 @@ FragServer::FragServer()
     serverWindow->show();
 #else
     dediServerUI = new DediServerUI(persistence);
+    remoteServer = new TcpClient();
+    messageParser = new MessageParser(this)  ; // TCP message parser
+    demoWriter    = new Playback(this)       ; // WolfcamQL stuff (unused in server) and demo writing
 #endif
 
     // Required for use between threads
@@ -63,6 +70,14 @@ FragServer::FragServer()
     connect(serverWindow  , SIGNAL(myQuit())                     , threadManager                   , SLOT(shutdown())                     );
     connect(serverWindow  , SIGNAL(myQuit())                     , this                            , SLOT(beginShutdown())                );
     connect(tcpListener   , SIGNAL(setConnectedClients(int))     , SERVERUI->connectedClientsSpin  , SLOT(setValue(int))                  );
+#else
+    connect(remoteServer  , SIGNAL(remoteServerConnect())        , remoteServer                    , SLOT(tcpConnect())                   );
+    connect(remoteServer  , SIGNAL(newMessage(bool, QByteArray)) , messageParser                   , SLOT(readMessage(bool, QByteArray))  );
+
+    connect(messageParser , SIGNAL(demoNew(QString, QByteArray, qint64)) , demoWriter              , SLOT(demoNew(QString, QByteArray, qint64)) );
+    connect(messageParser , SIGNAL(demoAppend(QString, QByteArray))      , demoWriter              , SLOT(demoAppend(QString, QByteArray))      );
+    connect(messageParser , SIGNAL(demoFinish())                         , demoWriter              , SLOT(demoFinish())                         );
+
 #endif
 
     connect(threadManager , SIGNAL(allThreadsFinished())         , this                            , SLOT(finishShutdown())               );
@@ -74,6 +89,11 @@ FragServer::FragServer()
     connect(demoScanner   , SIGNAL(newDemo(QByteArray))          , workerManager                   , SIGNAL(newDemo(QByteArray))          );
     connect(demoScanner   , SIGNAL(appendDemo(QByteArray))       , workerManager                   , SIGNAL(appendDemo(QByteArray))       );
     connect(demoScanner   , SIGNAL(finishDemo(QByteArray))       , workerManager                   , SIGNAL(finishDemo(QByteArray))       );
+
+#ifndef QT_GUI_LIB
+    remoteServer->autoConnect();
+#endif
+
 }
 FragServer::~FragServer()
 {
@@ -90,6 +110,11 @@ Fixme... things should be deleted! Disabled atm as I have no idea if there are a
 
     delete persistence;
     delete myDebug;
+
+#ifndef QT_GUI_LIB
+    delete remoteServer;
+    delete dediServer;
+#endif
     */
 }
 

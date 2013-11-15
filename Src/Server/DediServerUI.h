@@ -28,6 +28,9 @@ public:
     QString getDemoFolderPath() const { return persistence->getStringSetting("demoPathField"); }
     bool getDemoScannerDebug() const { return persistence->getBoolSetting("demoScannerDebugCheck"); }
 
+    bool getUseRemoteServer() const { return persistence->getBoolSetting("useRemoteServer"); }
+    QString getRemoteServerName() const { return persistence->getStringSetting("remoteServerName"); }
+    QString getRemoteServerAddress() const { return persistence->getStringSetting("remoteServerAddress"); }
 
 private:
 

@@ -16,6 +16,9 @@ public:
     TcpClient(QObject* parent = 0);
     ~TcpClient();
 
+#ifndef QT_GUI_LIB
+    void autoConnect();
+#endif
 
 private:
 
@@ -44,7 +47,9 @@ signals:
 
     void incompatibleVersion(quint32 minimumVersion);
 
-
+#ifndef QT_GUI_LIB
+    void remoteServerConnect();
+#endif
 };
 
 

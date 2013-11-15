@@ -1,6 +1,5 @@
 #include "MessageParser.h"
 #include "FragEnums.h"
-#include "clientWindow.h"
 
 #include <QtCore>
 #include <QXmlStreamAttributes>
@@ -129,7 +128,6 @@ void MessageParser::parseDemoMessage(QXmlStreamReader* xml)
             return;
 
         qint64 fileTimeStamp    = xml->readElementText().toLongLong();
-
 
         emit this->demoNew(fileName, fileContents, fileTimeStamp);
     }

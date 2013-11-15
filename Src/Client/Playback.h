@@ -19,12 +19,13 @@ public:
 private:
 
 
+#ifdef QT_GUI_LIB
     QProcess* wolfcam;
     QStringList wolfCommandLine;
 
     QFileInfo wolfExeFile;
     QString exePath;
-
+#endif
 
     int messageCount;
 
@@ -45,6 +46,7 @@ private:
 
 public slots:
 
+#ifdef QT_GUI_LIB
     void setPaths();
     void getWolfExePath();
 
@@ -52,13 +54,16 @@ public slots:
     void resetWolfcam();
     void writeMessageFile(QStringList commands, bool execute = true);
     void wolfcamLoadScanner();
+#endif
 
     void demoNew(QString fileName, QByteArray contents, qint64 timeStamp);
     void demoAppend(QString fileName, QByteArray contents);
     void demoFinish();
 
+#ifdef QT_GUI_LIB
     void setDemo(QString fileName, qint64 fileTimeStamp);
     void stopDemo();
+
     void startWolfcam();
     void testWolfcam();
 
@@ -75,7 +80,7 @@ public slots:
 signals:
 
     void ipcGetVideoOffset(QStringList message);
-
+#endif
 
 };
 
