@@ -2,8 +2,6 @@
 #include "TcpClient.h"
 #include "clientWindow.h"
 #include "MyDebug.h"
-#include "StreamVideoWindow.h"
-#include "StreamChatWindow.h"
 #include "ChannelManager.h"
 #include "BarcodeReader.h"
 #include "Playback.h"

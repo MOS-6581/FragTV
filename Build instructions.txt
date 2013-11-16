@@ -1,16 +1,18 @@
-
+Archlinux instructions:
 
 Dependencies:
-% sudo apt-get install g++ qt4-dev-tools libqt4-dev libdmtx-dev git
+% gcc qt4 libdmtx git
 
-Get the repo:
-% git clone git://github.com/MOS-6581/FragTV.git
+Get the repo (recommend Anthony-Jacques repo):
+% git clone https://github.com/MOS-6581/FragTV.git
+% git clone https://github.com/esdf/FragTV.git
+% git clone https://github.com/Anthony-Jacques/FragTV.git
 
 Client:
 % cd FragTV/Project/Client/
 % mkdir build
 % cd build/
-% qmake -r ../
+% qmake-qt4 -r ../
 % make
 % ./FragTV
 
@@ -19,6 +21,14 @@ Server:
 % cd FragTV/Project/Server/
 % mkdir build
 % cd build/
-% qmake -r ../
+% qmake-qt4 -r ../
+% make
+% ./FragTVServer
+
+DediServer:
+% cd FragTV/Project/DediServer/
+% mkdir build
+% cd build/
+% qmake-qt4 -r ../
 % make
 % ./FragTVServer

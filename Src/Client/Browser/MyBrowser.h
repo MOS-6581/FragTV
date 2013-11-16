@@ -7,8 +7,6 @@
 class MyDebug;
 class BarcodeReader;
 class MyNetworkCookieJar;
-class StreamChatWindow;
-class StreamVideoWindow;
 class ThreadManager;
 class Ipc;
 
@@ -32,8 +30,6 @@ private:
     BarcodeReader* barcodeReader;
 
     MyNetworkCookieJar* myCookieJar;
-    StreamVideoWindow* streamVideoWindow;
-    StreamChatWindow* streamChatWindow;
 
     Ipc* ipcClient;
 
