@@ -99,6 +99,8 @@ void TcpListener::incomingConnection(int socketDescriptor)
 {
     if(currentClients >= maximumClients)
     {
+        qDebug() << "Rejected incoming connection - over maximumClients";
+
         QTcpSocket connection;
 
         if(!connection.setSocketDescriptor(socketDescriptor, QAbstractSocket::ConnectedState, QIODevice::WriteOnly)) 
@@ -126,6 +128,7 @@ void TcpListener::incomingConnection(int socketDescriptor)
 
     if(hostList.count(hostAddress) >= limitConnections) 
     {
+        qDebug() << "Rejected connection from: " << hostAddress.toString();
         spectator->abort();
         spectator->deleteLater();
 
@@ -138,13 +141,16 @@ void TcpListener::incomingConnection(int socketDescriptor)
     currentClients++;
     hostList.append(hostAddress);
 
-
+    qDebug() << "Accepted connection from: " << hostAddress.toString();
+    
     emit this->newConnection(spectator);
 }
 void TcpListener::tcpClientDisc(QHostAddress hostAddress)
 {
     hostListDelayedRemove << hostAddress;
     currentClients--;
+
+    qDebug() << "Client disconnected: " << hostAddress.toString();
 }
 void TcpListener::delayedRemove()
 {

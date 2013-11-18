@@ -84,7 +84,7 @@ void DemoScanner::demoScannerStart()
     emit this->setStatusMessage("Monitoring.. waiting for new demo");
     emit this->setStatus(true);
 
-    qDebug() << "File monitor active, waiting for new demo";
+    qDebug() << "File monitor active, waiting for new demo in: " << demoFolderPath;
 }
 void DemoScanner::demoScannerStop()
 {
