@@ -31,7 +31,12 @@ TcpWorkerManager::TcpWorkerManager(QObject* parent) : QObject(parent), throttled
     spectatorCommands = new SpectatorCommands(this);
     spectatorCommands->setMotd(html);
     spectatorCommands->setBrowserVideoUrl(videoUrl);
-    spectatorCommands->setBrowserPosition(FRAGTV::Browser::VideoNormal);
+    QUrl url = QUrl(videoUrl);
+    if(!url.isValid())
+        spectatorCommands->setBrowserPosition(FRAGTV::Browser::VideoHide);
+    else
+        spectatorCommands->setBrowserPosition(FRAGTV::Browser::VideoNormal);
+
     spectatorCommands->setBrowserChatUrl(chatUrl);
 
 #ifdef QT_GUI_LIB
