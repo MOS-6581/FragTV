@@ -39,3 +39,17 @@ Consult http://portforward.com/guides.htm if you dont know how to forward ports 
 
 Step 6:
 Under the game tab specify your demo folder and start scanning to look for new data to broadcast.
+
+
+Dediserver:
+
+Step 1:
+Configure a FragTV server on the "cameraman" PC which is capturing demos via QL, and hosting them with a FragTVServer instance
+(if you wish, this can be using DediServer with remoteServerAddress not set)
+
+Step 2:
+Connect to the "cameraman" FragTV with it's address set in remoteServerAddress, like so:
+./FragTVServer --remoteServerAddress cameraman.ip.here:80 --ipField dedi.server.ip.here --portField 80 --demoPathField /tmp/
+
+Step 3:
+give out the dedi-server's IP address and port as specified, and clients should be able to connect to this server.
