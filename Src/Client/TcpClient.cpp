@@ -113,7 +113,9 @@ void TcpClient::tcpDisconnected()
 
     qDebug() << "Disconnected!";
 
+#ifndef QT_GUI_LIB
     autoConnect();
+#endif
 }
 
 void TcpClient::tcpReadData()
