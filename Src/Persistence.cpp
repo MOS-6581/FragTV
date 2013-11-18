@@ -150,32 +150,32 @@ bool Persistence::isWindowVisible(QWidget* window)
 
 #endif
 
-bool Persistence::getBoolSetting(const QString &name) const
+bool Persistence::getBoolSetting(const QString &name, bool defaultVal) const
 {
 	bool value = mySettings->value(name).toBool();
 	if(mySettings->contains(name))
 		return value;
 
-	return false;
+	return defaultVal;
 }
 
-QString Persistence::getStringSetting(const QString &name) const
+QString Persistence::getStringSetting(const QString &name, QString defaultVal) const
 {
         QString value = mySettings->value(name).toString();
         if(mySettings->contains(name))
 		return value;
 
-	return QString("");
+	return defaultVal;
 }
 
 
-int Persistence::getIntSetting(const QString &name) const
+int Persistence::getIntSetting(const QString &name, int defaultVal) const
 {
         int value = mySettings->value(name).toInt();
         if(mySettings->contains(name))
 		return value;
 
-	return 0;
+	return defaultVal;
 }
 
 void Persistence::processCommandline(const QStringList &args)

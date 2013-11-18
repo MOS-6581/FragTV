@@ -12,25 +12,24 @@ public:
     ~DediServerUI();
     static const DediServerUI *getInstance() { return singletonInstance; }
     
-    int getLimitConnections() const { return persistence->getIntSetting("limitConnectionsSpin"); }
-    int getMaximumClients() const { return persistence->getIntSetting("maxClientsSpin"); }
-    QString getListenIP() const { return persistence->getStringSetting("ipField"); }
-    int getListenPort() const { return persistence->getIntSetting("portField"); }
-    bool getListenOnStartup() const { return persistence->getBoolSetting("listenOnStartupCheck"); }
+    int getLimitConnections() const { return persistence->getIntSetting("limitConnectionsSpin", 1); }
+    int getMaximumClients() const { return persistence->getIntSetting("maxClientsSpin", 2000); }
+    QString getListenIP() const { return persistence->getStringSetting("ipField", "127.0.0.1"); }
+    int getListenPort() const { return persistence->getIntSetting("portField", 80); }
+    bool getListenOnStartup() const { return persistence->getBoolSetting("listenOnStartupCheck", true); }
 
-    int getMaxThrottle() const { return persistence->getIntSetting("throttleConnectionsSpin"); }
-    QString getVideoURL() const { return persistence->getStringSetting("videoBrowserUrlField"); }
-    QString getChatURL() const { return persistence->getStringSetting("chatBrowserUrlField"); }
+    int getMaxThrottle() const { return persistence->getIntSetting("throttleConnectionsSpin", 10); }
+    QString getVideoURL() const { return persistence->getStringSetting("videoBrowserUrlField", ""); }
+    QString getChatURL() const { return persistence->getStringSetting("chatBrowserUrlField", ""); }
     QString getMotdHtml() const;
-    int getNumThreads() const { return persistence->getIntSetting("threadsSpin"); }
+    int getNumThreads() const { return persistence->getIntSetting("threadsSpin", 3); }
 
-    bool getDemoScannerEnabled() const { return persistence->getBoolSetting("demoStartupScanCheck"); }
-    QString getDemoFolderPath() const { return persistence->getStringSetting("demoPathField"); }
-    bool getDemoScannerDebug() const { return persistence->getBoolSetting("demoScannerDebugCheck"); }
+    bool getDemoScannerEnabled() const { return persistence->getBoolSetting("demoStartupScanCheck", true); }
+    QString getDemoFolderPath() const { return persistence->getStringSetting("demoPathField", "/tmp"); }
+    bool getDemoScannerDebug() const { return persistence->getBoolSetting("demoScannerDebugCheck", true); }
 
-    bool getUseRemoteServer() const { return persistence->getBoolSetting("useRemoteServer"); }
-    QString getRemoteServerName() const { return persistence->getStringSetting("remoteServerName"); }
-    QString getRemoteServerAddress() const { return persistence->getStringSetting("remoteServerAddress"); }
+    QString getRemoteServerName() const { return persistence->getStringSetting("remoteServerName", ""); }
+    QString getRemoteServerAddress() const { return persistence->getStringSetting("remoteServerAddress", ""); }
 
 private:
 

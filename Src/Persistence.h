@@ -44,9 +44,9 @@ public slots:
     void restoreTheChildren(QObject* object);
 #endif
 
-    bool getBoolSetting(const QString &name) const;
-    QString getStringSetting(const QString &name) const;
-    int getIntSetting(const QString &name) const;
+    bool getBoolSetting(const QString &name, bool defaultVal) const;
+    QString getStringSetting(const QString &name, QString defaultVal) const;
+    int getIntSetting(const QString &name, int defaultVal) const;
     void processCommandline(const QStringList &args);
     
 };
