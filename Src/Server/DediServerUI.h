@@ -12,7 +12,7 @@ public:
     ~DediServerUI();
     static const DediServerUI *getInstance() { return singletonInstance; }
     
-    int getLimitConnections() const { return persistence->getIntSetting("limitConnectionsSpin", 1); }
+    int getLimitConnections() const { return persistence->getIntSetting("limitConnectionsSpin", 2); }
     int getMaximumClients() const { return persistence->getIntSetting("maxClientsSpin", 2000); }
     QString getListenIP() const { return persistence->getStringSetting("ipField", "127.0.0.1"); }
     int getListenPort() const { return persistence->getIntSetting("portField", 80); }
