@@ -36,10 +36,8 @@ TcpClient::~TcpClient()
 #ifndef QT_GUI_LIB
 void TcpClient::autoConnect()
 {
-	printf("Autoconnect\n");
-    if (DediServerUI::getInstance()->getUseRemoteServer())
+    if (!DediServerUI::getInstance()->getRemoteServerAddress().isEmpty())
     {
-	    printf("emitting\n");
 	    emit this->remoteServerConnect();
     }
 }
@@ -47,7 +45,6 @@ void TcpClient::autoConnect()
 
 void TcpClient::tcpConnect()
 {
-	printf("in tcpConnect\n");
 #ifdef QT_GUI_LIB
     QString serverName   = CLIENTUI->serverNameField->text();
     QString serverString = CLIENTUI->serverAddressField->text(); 
