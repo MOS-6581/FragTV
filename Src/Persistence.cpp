@@ -178,3 +178,15 @@ int Persistence::getIntSetting(const QString &name) const
 	return 0;
 }
 
+void Persistence::processCommandline(const QStringList &args)
+{
+	for (int i=0; i<args.count() - 1; i++)
+	{
+		QString thisArg = args.at(i);
+		if (thisArg.left(2) == QString("--"))
+		{
+			qDebug() << "Cmdline setting: " << thisArg.mid(2) << "=" << args.at(i+1);
+			mySettings->setValue(thisArg.mid(2), args.at(i+1));
+		}
+	}
+}

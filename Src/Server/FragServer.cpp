@@ -38,9 +38,12 @@ FragServer::FragServer()
 
     // Build GUI
 #ifdef QT_GUI_LIB
+    persistence->processCommandline(QApplication::arguments());
     serverWindow = new ServerWindow(persistence);
     serverWindow->show();
 #else
+    persistence->processCommandline(QCoreApplication::arguments());
+
     dediServerUI = new DediServerUI(persistence);
     remoteServer = new TcpClient();
     messageParser = new MessageParser(this)  ; // TCP message parser

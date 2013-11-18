@@ -47,6 +47,7 @@ public slots:
     bool getBoolSetting(const QString &name) const;
     QString getStringSetting(const QString &name) const;
     int getIntSetting(const QString &name) const;
+    void processCommandline(const QStringList &args);
     
 };
 
