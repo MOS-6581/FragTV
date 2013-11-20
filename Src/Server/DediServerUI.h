@@ -31,6 +31,9 @@ public:
     QString getRemoteServerName() const { return persistence->getStringSetting("remoteServerName", ""); }
     QString getRemoteServerAddress() const { return persistence->getStringSetting("remoteServerAddress", ""); }
 
+    int getDelayGameData() const { return persistence->getBoolSetting("delayGameDataCheck", false); }
+    int getDelayGameDataDuration() const { return persistence->getIntSetting("delayGameDataSpin", 10000); }
+    
 private:
 
     Persistence* persistence;

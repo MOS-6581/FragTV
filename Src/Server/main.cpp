@@ -14,7 +14,7 @@ int main(int argc, char *argv[])
 #endif // QT_GUI_LIB
 
     application.setOrganizationName("FragTV");
-    application.setApplicationVersion("0.1");
+    application.setApplicationVersion("0.1.2");
     application.setApplicationName("FragServer");
 
 

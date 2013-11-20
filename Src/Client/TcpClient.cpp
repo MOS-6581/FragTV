@@ -16,6 +16,7 @@ TcpClient::TcpClient(QObject* parent) : QObject(parent), blockSize(0)
 {
     tcpSocket = new QTcpSocket(this);
     tcpSocket->setReadBufferSize(1024 * 1024);
+    tcpSocket->setSocketOption(QAbstractSocket::KeepAliveOption, true);
 
 
 #ifdef QT_GUI_LIB

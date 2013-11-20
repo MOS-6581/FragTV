@@ -732,6 +732,16 @@ p, li { white-space: pre-wrap; }
               </widget>
              </item>
              <item>
+              <widget class="QCheckBox" name="demoScannerDebugCheck">
+               <property name="text">
+                <string>Debug output</string>
+               </property>
+               <property name="checked">
+                <bool>true</bool>
+               </property>
+              </widget>
+             </item>
+             <item>
               <spacer name="horizontalSpacer">
                <property name="orientation">
                 <enum>Qt::Horizontal</enum>
@@ -746,12 +756,75 @@ p, li { white-space: pre-wrap; }
              </item>
             </layout>
            </item>
+          </layout>
+         </widget>
+        </item>
+        <item>
+         <widget class="QGroupBox" name="groupBox_2">
+          <property name="title">
+           <string>Delay</string>
+          </property>
+          <layout class="QVBoxLayout" name="verticalLayout_16">
            <item>
-            <widget class="QCheckBox" name="demoScannerDebugCheck">
-             <property name="text">
-              <string>Debug</string>
+            <layout class="QHBoxLayout" name="horizontalLayout_11">
+             <item>
+              <widget class="QCheckBox" name="delayGameDataCheck">
+               <property name="text">
+                <string>Delay game data:</string>
+               </property>
+              </widget>
+             </item>
+             <item>
+              <widget class="QSpinBox" name="delayGameDataSpin">
+               <property name="maximum">
+                <number>99999</number>
+               </property>
+               <property name="singleStep">
+                <number>1000</number>
+               </property>
+              </widget>
+             </item>
+             <item>
+              <widget class="QLabel" name="label_15">
+               <property name="text">
+                <string>ms</string>
+               </property>
+              </widget>
+             </item>
+             <item>
+              <widget class="QLabel" name="label_17">
+               <property name="enabled">
+                <bool>false</bool>
+               </property>
+               <property name="text">
+                <string>(Restart required)</string>
+               </property>
+              </widget>
+             </item>
+             <item>
+              <spacer name="horizontalSpacer_6">
+               <property name="orientation">
+                <enum>Qt::Horizontal</enum>
+               </property>
+               <property name="sizeHint" stdset="0">
+                <size>
+                 <width>40</width>
+                 <height>20</height>
+                </size>
+               </property>
+              </spacer>
+             </item>
+            </layout>
+           </item>
+           <item>
+            <widget class="QLabel" name="label_16">
+             <property name="enabled">
+              <bool>false</bool>
              </property>
-             <property name="checked">
+             <property name="text">
+              <string>Warning: You should leave atleast 5 seconds margin between the twitch delay and this delay, or else spectators will run out of data and crash..</string>
+             </property>
+             <property name="wordWrap">
               <bool>true</bool>
              </property>
             </widget>

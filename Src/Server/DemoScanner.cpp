@@ -15,7 +15,13 @@ DemoScanner::DemoScanner() : isStreaming(false)
     demoFeedTimer = new QTimer(this);
     demoFeedTimer->setInterval(100);
 
+    QTimer* delayTimer = new QTimer(this);
+    delayTimer->start(100);
+
 #ifdef QT_GUI_LIB
+    delayData = SERVERUI->delayGameDataCheck->isChecked();
+    delayDuration = SERVERUI->delayGameDataSpin->value();
+
     bool demoScannerEnabled = SERVERUI->demoStartupScanCheck->isChecked();
     demoFolderPath = SERVERUI->demoPathField->text();
     debugging = SERVERUI->demoScannerDebugCheck->isChecked();
@@ -29,9 +35,12 @@ DemoScanner::DemoScanner() : isStreaming(false)
     bool demoScannerEnabled = DediServerUI::getInstance()->getDemoScannerEnabled();
     demoFolderPath = DediServerUI::getInstance()->getDemoFolderPath();
     debugging = DediServerUI::getInstance()->getDemoScannerDebug();
+    delayData = DediServerUI::getInstance()->getDelayGameData();
+    delayDuration = DediServerUI::getInstance()->getDelayGameDataDuration();
 #endif
 
     connect(demoFeedTimer                   , SIGNAL(timeout())                 , this                      , SLOT(feedDemo())                 );
+    connect(delayTimer                      , SIGNAL(timeout())                 , this                      , SLOT(sendDelayedData())          );
 
 #ifdef QT_GUI_LIB
     connect(this                            , SIGNAL(setStatus(bool))           , SERVERMAIN                , SLOT(setDemoScannerStatus(bool)) );
@@ -131,9 +140,6 @@ void DemoScanner::checkForNewDemo(QString path)
 
 void DemoScanner::readNewDemo(QString fileName)
 {
-    lastFileUpdateTime  = QDateTime::currentMSecsSinceEpoch();
-    currentDemoFileName = fileName;
-
     qDebug() << "Found new demo: " << fileName;
 
 
@@ -146,6 +152,10 @@ void DemoScanner::readNewDemo(QString fileName)
     isStreaming = true;
 
 
+    lastFileUpdateTime  = QDateTime::currentMSecsSinceEpoch();
+    currentDemoFileName = fileName;
+
+
     QString demoPath = demoFolderPath + QDir::separator() + fileName;
 
     currentDemoFile = new QFile(demoPath);
@@ -155,6 +165,7 @@ void DemoScanner::readNewDemo(QString fileName)
     QByteArray demoPiece = currentDemoFile->read(4096);
     currentDemoFile->close();
     currentDemoReadPosition = demoPiece.size();
+    chunksRead = 1;
 
 
     MessageBuilder builder;
@@ -167,12 +178,22 @@ void DemoScanner::readNewDemo(QString fileName)
     QByteArray message = builder.generate();
 
 
-    currentDemoAllChunks.append(message);
-    
+    if(delayData)
+    {
+        demoChunk chunk;
+        chunk.message = message;
+        chunk.messageType = FRAGTV::Demo::New;
+        chunk.readTime = QDateTime::currentMSecsSinceEpoch();
 
-    emit this->newDemo(message);
+        delayedChunks << chunk;
+    }
+    else
+    {
+        emit this->newDemo(message);
+    }
+
+
     emit this->setStatusMessage("Now streaming: " + fileName);
-
 
     demoFeedTimer->start();
 }
@@ -213,7 +234,20 @@ void DemoScanner::feedDemo()
     QByteArray message = builder.generate();
 
 
-    emit this->appendDemo(message);
+
+    if(delayData)
+    {
+        demoChunk chunk;
+        chunk.message = message;
+        chunk.messageType = FRAGTV::Demo::Append;
+        chunk.readTime = QDateTime::currentMSecsSinceEpoch();
+
+        delayedChunks << chunk;
+    }
+    else
+    {
+        emit this->appendDemo(message);
+    }
 
 
     qint64 currentTime  = QDateTime::currentMSecsSinceEpoch();
@@ -222,16 +256,12 @@ void DemoScanner::feedDemo()
 
 
     currentDemoReadPosition += demoPiece.size();
-    currentDemoAllChunks.append(message);
+    chunksRead++;
 
 
     if(debugging)
     {
-        QByteArray chunkOffset = QByteArray::number(chunkTimeOffset);
-        QByteArray chunkSize   = QByteArray::number(demoPiece.size());
-        QByteArray chunksSent  = QByteArray::number(currentDemoAllChunks.size());
-
-        qDebug() << "New demo chunk: " << chunkOffset << "ms offset (" << chunkSize << " bytes) chunks sent: " << chunksSent;
+        qDebug() << "New demo chunk: " << chunkTimeOffset << "ms offset (" << demoPiece.size() << " bytes) chunks read: " << chunksRead;
     }
 
 
@@ -240,15 +270,15 @@ void DemoScanner::feedDemo()
 void DemoScanner::demoFinished()
 {
     isStreaming = false;
+    chunksRead = 0;
 
     demoFeedTimer->stop();
-
-    currentDemoAllChunks.clear();
 
     if(currentDemoFile)
     {
         currentDemoFile->deleteLater();
     }
+
 
     MessageBuilder builder;
     builder.messageType = FRAGTV::DemoMessage;
@@ -257,10 +287,53 @@ void DemoScanner::demoFinished()
     QByteArray message = builder.generate();
 
 
-    emit this->finishDemo(message);
+    if(delayData)
+    {
+        demoChunk chunk;
+        chunk.message = message;
+        chunk.messageType = FRAGTV::Demo::Finished;
+        chunk.readTime = QDateTime::currentMSecsSinceEpoch();
+
+        delayedChunks << chunk;
+    }
+    else
+    {
+        emit this->finishDemo(message);
+    }
+
 
     emit this->setStatusMessage("Scanning for new demo files..");
 
     qDebug() << "Demo finished!";
+}
+
+void DemoScanner::sendDelayedData()
+{
+    qint64 currentTime = QDateTime::currentMSecsSinceEpoch();
+    qint64 minimumCutoff = currentTime - delayDuration;
+
+    foreach(demoChunk chunk, delayedChunks)
+    {
+        if(chunk.readTime <= minimumCutoff) // chunk has waited long enough, transfer to spectators
+        {
+            delayedChunks.removeFirst();
+            if(chunk.messageType == FRAGTV::Demo::Append)
+            {
+                emit this->appendDemo(chunk.message);
+            }
+            else if(chunk.messageType == FRAGTV::Demo::New)
+            {
+                emit this->newDemo(chunk.message);
+            }
+            else
+            {
+                emit this->finishDemo(chunk.message);
+            }
+        }
+        else
+        {
+            break;
+        }
+    }
 }
 
