@@ -17,5 +17,4 @@ TEMPLATE = app
 CONFIG += console
 		 
 include(dediserver.pri)
-include(../dmtx.pri)
 
