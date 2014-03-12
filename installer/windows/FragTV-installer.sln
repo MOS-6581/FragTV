@@ -1,7 +1,7 @@
 ﻿
 Microsoft Visual Studio Solution File, Format Version 9.00
 # Visual Studio 2005
-Project("{54435603-DBB4-11D2-8724-00A0C9A8B90C}") = "FragTV-Client", "FragTV-Client.vdproj", "{C693E01F-C044-41B6-B4E0-D3C892BB3559}"
+Project("{54435603-DBB4-11D2-8724-00A0C9A8B90C}") = "FragTV", "FragTV.vdproj", "{C693E01F-C044-41B6-B4E0-D3C892BB3559}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
