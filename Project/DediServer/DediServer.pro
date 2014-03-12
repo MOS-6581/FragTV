@@ -12,7 +12,7 @@ QT += core network xml
 
 QT -= gui
 
-TARGET = FragTVServer
+TARGET = FragTV-Dedicated
 TEMPLATE = app
 CONFIG += console
 		 

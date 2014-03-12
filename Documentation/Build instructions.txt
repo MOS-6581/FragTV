@@ -16,7 +16,6 @@ Client:
 % make
 % ./FragTV
 
-
 Server:
 % cd FragTV/Project/Server/
 % mkdir build
@@ -31,4 +30,4 @@ DediServer:
 % cd build/
 % qmake-qt4 -r ../
 % make
-% ./FragTVServer --remoteAddress qlrankstv.mooo.com:80 --ipField 127.0.0.1 --portField 80 --demoPathField /tmp/
+% ./FragTV-Dedicated --remoteAddress qlrankstv.mooo.com:80 --ipField 127.0.0.1 --portField 80 --demoPathField /tmp/
