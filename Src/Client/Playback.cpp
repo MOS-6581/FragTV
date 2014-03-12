@@ -409,7 +409,7 @@ void Playback::demoNew(QString fileName, QByteArray contents, qint64 timeStamp)
     currentDemoChunksRecieved = 1;
 
 
-    if(!demoFile->open(QIODevice::WriteOnly))
+    if(!demoFile->open(QIODevice::WriteOnly | QIODevice::Truncate))
     {
         qDebug() << "Could not open output file, aborting!";
 
