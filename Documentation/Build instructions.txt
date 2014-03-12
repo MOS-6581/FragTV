@@ -1,0 +1,33 @@
+Archlinux instructions:
+
+Dependencies:
+% gcc qt4 libdmtx git
+
+Get the repo (recommend Anthony-Jacques repo):
+% git clone https://github.com/MOS-6581/FragTV.git
+% git clone https://github.com/esdf/FragTV.git
+% git clone https://github.com/Anthony-Jacques/FragTV.git
+
+Client:
+% cd FragTV/Project/Client/
+% mkdir build
+% cd build/
+% qmake-qt4 -r ../
+% make
+% ./FragTV
+
+Server:
+% cd FragTV/Project/Server/
+% mkdir build
+% cd build/
+% qmake-qt4 -r ../
+% make
+% ./FragTVServer
+
+DediServer:
+% cd FragTV/Project/DediServer/
+% mkdir build
+% cd build/
+% qmake-qt4 -r ../
+% make
+% ./FragTV-Dedicated --remoteAddress qlrankstv.mooo.com:80 --ipField 127.0.0.1 --portField 80 --demoPathField /tmp/

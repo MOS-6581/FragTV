@@ -43,7 +43,7 @@ void StreamVideoWindow::setWindowPosition(int position)
         this->isCustomSizeActive = false;
 
         this->lower();
-        this->showMinimized();
+        this->hide();
 
 
         qDebug() << "Video Browser hide";

@@ -1,22 +1,33 @@
 #include "Persistence.h"
 
 #include <QtCore>
+#include <QSettings>
+
+#ifdef QT_GUI_LIB
+
 #include <QtGui>
 #include <QCheckBox>
 #include <QLineEdit>
 #include <QSpinBox>
-#include <QSettings>
 #include <QDesktopServices>
 #include <QDesktopWidget>
+#endif
 
-
-Persistence::Persistence(QWidget* topWindow) : topWindow(topWindow)
+Persistence::Persistence()
 {
     mySettings = new QSettings();
 }
+
 Persistence::~Persistence()
 {
     mySettings->deleteLater();
+}
+
+#ifdef QT_GUI_LIB
+
+Persistence::Persistence(QWidget* aTopWindow) : topWindow(aTopWindow)
+{
+    mySettings = new QSettings();
 }
 
 void Persistence::saveWindow()
@@ -135,4 +146,47 @@ bool Persistence::isWindowVisible(QWidget* window)
     {
         return false;
     }
+}
+
+#endif
+
+bool Persistence::getBoolSetting(const QString &name, bool defaultVal) const
+{
+	bool value = mySettings->value(name).toBool();
+	if(mySettings->contains(name))
+		return value;
+
+	return defaultVal;
+}
+
+QString Persistence::getStringSetting(const QString &name, QString defaultVal) const
+{
+        QString value = mySettings->value(name).toString();
+        if(mySettings->contains(name))
+		return value;
+
+	return defaultVal;
+}
+
+
+int Persistence::getIntSetting(const QString &name, int defaultVal) const
+{
+        int value = mySettings->value(name).toInt();
+        if(mySettings->contains(name))
+		return value;
+
+	return defaultVal;
+}
+
+void Persistence::processCommandline(const QStringList &args)
+{
+	for (int i=0; i<args.count() - 1; i++)
+	{
+		QString thisArg = args.at(i);
+		if (thisArg.left(2) == QString("--"))
+		{
+			qDebug() << "Cmdline setting: " << thisArg.mid(2) << "=" << args.at(i+1);
+			mySettings->setValue(thisArg.mid(2), args.at(i+1));
+		}
+	}
 }

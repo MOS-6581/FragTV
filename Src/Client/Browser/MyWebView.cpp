@@ -108,6 +108,7 @@ void MyWebView::safeLoad(QString urlString)
     if(!url.isValid())
     {
         qDebug() << "Invalid url..";
+        hide();
 
         return;
     }

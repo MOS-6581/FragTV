@@ -18,29 +18,34 @@ DemoScanner::DemoScanner() : isStreaming(false)
     QTimer* delayTimer = new QTimer(this);
     delayTimer->start(100);
 
-
+#ifdef QT_GUI_LIB
     delayData = SERVERUI->delayGameDataCheck->isChecked();
     delayDuration = SERVERUI->delayGameDataSpin->value();
-
 
     bool demoScannerEnabled = SERVERUI->demoStartupScanCheck->isChecked();
     demoFolderPath = SERVERUI->demoPathField->text();
     debugging = SERVERUI->demoScannerDebugCheck->isChecked();
 
-
     connect(SERVERUI->demoPathField         , SIGNAL(textChanged(QString))      , this                      , SLOT(setDemoFolderPath(QString)) );
     connect(SERVERUI->demoScannerDebugCheck , SIGNAL(stateChanged(int))         , this                      , SLOT(setDebugging(int))          );
-
     connect(SERVERUI->demoPathField         , SIGNAL(returnPressed())           , this                      , SLOT(demoScannerStart())         );
     connect(SERVERUI->scannerStartButton    , SIGNAL(clicked())                 , this                      , SLOT(demoScannerStart())         );
     connect(SERVERUI->scannerStopButton     , SIGNAL(clicked())                 , this                      , SLOT(demoScannerStop())          );
+#else
+    bool demoScannerEnabled = DediServerUI::getInstance()->getDemoScannerEnabled();
+    demoFolderPath = DediServerUI::getInstance()->getDemoFolderPath();
+    debugging = DediServerUI::getInstance()->getDemoScannerDebug();
+    delayData = DediServerUI::getInstance()->getDelayGameData();
+    delayDuration = DediServerUI::getInstance()->getDelayGameDataDuration();
+#endif
 
     connect(demoFeedTimer                   , SIGNAL(timeout())                 , this                      , SLOT(feedDemo())                 );
     connect(delayTimer                      , SIGNAL(timeout())                 , this                      , SLOT(sendDelayedData())          );
 
+#ifdef QT_GUI_LIB
     connect(this                            , SIGNAL(setStatus(bool))           , SERVERMAIN                , SLOT(setDemoScannerStatus(bool)) );
     connect(this                            , SIGNAL(setStatusMessage(QString)) , SERVERUI->demoStatusField , SLOT(setText(QString))           );
-
+#endif
 
     if(demoScannerEnabled)
     {
@@ -88,7 +93,7 @@ void DemoScanner::demoScannerStart()
     emit this->setStatusMessage("Monitoring.. waiting for new demo");
     emit this->setStatus(true);
 
-    qDebug() << "File monitor active, waiting for new demo";
+    qDebug() << "File monitor active, waiting for new demo in: " << demoFolderPath;
 }
 void DemoScanner::demoScannerStop()
 {
@@ -312,7 +317,6 @@ void DemoScanner::sendDelayedData()
         if(chunk.readTime <= minimumCutoff) // chunk has waited long enough, transfer to spectators
         {
             delayedChunks.removeFirst();
-
             if(chunk.messageType == FRAGTV::Demo::Append)
             {
                 emit this->appendDemo(chunk.message);

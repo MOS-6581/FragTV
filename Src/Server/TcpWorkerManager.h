@@ -9,6 +9,7 @@ class TcpConnectionWorker;
 class Spectator;
 class SpectatorCommands;
 class NetStats;
+class MessageParser;
 
 
 class TcpWorkerManager : public QObject
@@ -21,6 +22,9 @@ public:
     TcpWorkerManager(QObject *parent = 0);
     ~TcpWorkerManager();
 
+#ifndef QT_GUI_LIB
+    void connectRemoteSettings(MessageParser *messageParser);
+#endif
 
 private:
 
@@ -34,7 +38,6 @@ private:
     SpectatorCommands* spectatorCommands;
 
     NetStats* netStats;
-
 
 public slots:
 

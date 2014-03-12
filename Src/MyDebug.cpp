@@ -1,5 +1,9 @@
 #include "MyDebug.h"
 
+#ifndef QT_GUI_LIB
+#include <iostream>
+#endif
+
 
 MyDebug* GLOBALDEBUG = NULL;
 
@@ -49,6 +53,9 @@ void MyDebug::debugHandler(QtMsgType type, const char* message)
 
     output += " " + QString(message);
 
+#ifndef QT_GUI_LIB
+    std::cout << output.toStdString() << std::endl;
+#endif
 
     QMetaObject::invokeMethod(GLOBALDEBUG, "print", Qt::QueuedConnection, Q_ARG(QString, output));
 }

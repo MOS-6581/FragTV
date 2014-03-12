@@ -14,7 +14,11 @@ class Persistence : public QObject
 
 public:
 
-    Persistence(QWidget* topWindow = 0);
+    Persistence();
+#ifdef QT_GUI_LIB
+    Persistence(QWidget* aTopWindow);
+#endif
+
     ~Persistence();
 
     QSettings* mySettings;
@@ -22,10 +26,14 @@ public:
 
 private:
 
+#ifdef QT_GUI_LIB
     QWidget* topWindow;
-
+#endif
 
 public slots:
+
+#ifdef QT_GUI_LIB
+    void setTopWindow(QWidget* aTopWindow) { topWindow = aTopWindow; }
 
     bool isWindowVisible(QWidget* window);
 
@@ -34,7 +42,12 @@ public slots:
 
     void saveTheChildren(QObject* object);
     void restoreTheChildren(QObject* object);
+#endif
 
+    bool getBoolSetting(const QString &name, bool defaultVal) const;
+    QString getStringSetting(const QString &name, QString defaultVal) const;
+    int getIntSetting(const QString &name, int defaultVal) const;
+    void processCommandline(const QStringList &args);
     
 };
 

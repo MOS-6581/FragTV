@@ -1,6 +1,8 @@
 #ifndef MAINWINDOW_H
 #define MAINWINDOW_H
 
+#ifdef QT_GUI_LIB
+
 #include "ui_serverWindow.h"
 
 #include <QMainWindow>
@@ -17,7 +19,7 @@ class ServerWindow : public QMainWindow
 
 public:
 
-    explicit ServerWindow();
+    explicit ServerWindow(Persistence *aPersistence);
     ~ServerWindow();
 
 
@@ -65,5 +67,12 @@ signals:
 
 extern Ui::ServerWindow* SERVERUI;
 extern ServerWindow* SERVERMAIN;
+
+#else
+
+#include "DediServerUI.h"
+
+#endif
+
 
 #endif // MAINWINDOW_H

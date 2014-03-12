@@ -11,7 +11,12 @@ class SyncHelper;
 class DemoScanner;
 class ThreadManager;
 class TcpWorkerManager;
+class Persistence;
 
+class DediServerUI;
+class TcpClient;
+class MessageParser;
+class Playback;
 
 class FragServer : public QObject
 {
@@ -27,21 +32,27 @@ public:
 
 private:
 
-    ServerWindow* serverWindow;
-
     MyDebug* myDebug;
     ThreadManager* threadManager;
     TcpListener* tcpListener;
     TcpWorkerManager* workerManager;
-    SyncHelper* syncHelper; 
     DemoScanner* demoScanner;
+    Persistence* persistence;
 
+#ifdef QT_GUI_LIB
+    ServerWindow* serverWindow;
+    SyncHelper* syncHelper; 
+#else
+    DediServerUI* dediServerUI;
+    TcpClient* remoteServer;
+    MessageParser* messageParser;
+    Playback* demoWriter;
+#endif
 
 public slots:
 
     void beginShutdown();
     void finishShutdown();
-
 
 };
 

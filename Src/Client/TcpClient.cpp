@@ -1,7 +1,13 @@
 ﻿#include "TcpClient.h"
+
+#ifdef QT_GUI_LIB
 #include "clientWindow.h"
-#include "FragEnums.h"
 #include "WidgetFlash.h"
+#else
+#include "DediServerUI.h"
+#endif
+
+#include "FragEnums.h"
 
 #include <QtNetwork>
 #include <QByteArray>
@@ -13,8 +19,10 @@ TcpClient::TcpClient(QObject* parent) : QObject(parent), blockSize(0)
     tcpSocket->setSocketOption(QAbstractSocket::KeepAliveOption, true);
 
 
+#ifdef QT_GUI_LIB
     connect(CLIENTUI->streamConnectButton    , SIGNAL(clicked())                           , this , SLOT(tcpConnect())                           );
     connect(CLIENTUI->streamDisconnectButton , SIGNAL(clicked())                           , this , SLOT(tcpDisconnect())                        );
+#endif
 
     connect(tcpSocket                        , SIGNAL(readyRead())                         , this , SLOT(tcpReadData())                          );
     connect(tcpSocket                        , SIGNAL(error(QAbstractSocket::SocketError)) , this , SLOT(tcpError(QAbstractSocket::SocketError)) );
@@ -26,17 +34,34 @@ TcpClient::~TcpClient()
     tcpSocket->abort();
 }
 
+#ifndef QT_GUI_LIB
+void TcpClient::autoConnect()
+{
+    if (!DediServerUI::getInstance()->getRemoteServerAddress().isEmpty())
+    {
+	    emit this->remoteServerConnect();
+    }
+}
+#endif
+
 void TcpClient::tcpConnect()
 {
+#ifdef QT_GUI_LIB
     QString serverName   = CLIENTUI->serverNameField->text();
     QString serverString = CLIENTUI->serverAddressField->text(); 
+#else
+    QString serverName   = DediServerUI::getInstance()->getRemoteServerName();
+    QString serverString = DediServerUI::getInstance()->getRemoteServerAddress();
+#endif
+
     QString hostIp       = serverString.split(":").value(0); 
     int hostPort         = serverString.split(":").value(1).toInt();
 
-
+#ifdef QT_GUI_LIB
     CLIENTUI->networkStatusField->setText("Connecting to: " + serverName);
     WidgetFlash widgetFlash;
     widgetFlash.green(CLIENTUI->networkStatusField);
+#endif
 
     qDebug() << "Connecting to: " << serverName << " " << serverString;
 
@@ -48,21 +73,25 @@ void TcpClient::tcpConnect()
 }
 void TcpClient::tcpConnected()
 {
+#ifdef QT_GUI_LIB
     CLIENTUI->networkStatusField->setText("Connected!");
     WidgetFlash widgetFlash;
     widgetFlash.green(CLIENTUI->networkStatusField);
 
     CLIENTUI->motdTextBrowser->clear();
     CLIENTUI->tabWidget->setCurrentWidget(CLIENTUI->motdTab);
+#endif
 
     qDebug() << "Connected!";
 }
 
 void TcpClient::tcpDisconnect()
 {
+#ifdef QT_GUI_LIB
     CLIENTUI->networkStatusField->setText("Disconnecting..");
     WidgetFlash widgetFlash;
     widgetFlash.green(CLIENTUI->networkStatusField);
+#endif
 
     qDebug() << "Disconnecting..";
 
@@ -71,6 +100,7 @@ void TcpClient::tcpDisconnect()
 }
 void TcpClient::tcpDisconnected()
 {
+#ifdef QT_GUI_LIB
     CLIENTUI->tabWidget->setCurrentIndex(0);
 
 
@@ -80,8 +110,13 @@ void TcpClient::tcpDisconnected()
     CLIENTUI->networkStatusField->setText("Disconnected!");
     WidgetFlash widgetFlash;
     widgetFlash.red(CLIENTUI->networkStatusField);
+#endif
 
     qDebug() << "Disconnected!";
+
+#ifndef QT_GUI_LIB
+    autoConnect();
+#endif
 }
 
 void TcpClient::tcpReadData()
@@ -180,10 +215,11 @@ void TcpClient::tcpError(QAbstractSocket::SocketError socketError)
 {
     Q_UNUSED(socketError);
     
-    
+#ifdef QT_GUI_LIB
     CLIENTUI->networkStatusField->setText(tcpSocket->errorString());
     WidgetFlash widgetFlash;
     widgetFlash.red(CLIENTUI->networkStatusField);
+#endif
 
     qDebug() << tcpSocket->errorString();
 }
